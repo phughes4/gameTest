@@ -27,7 +27,8 @@ class KeyboardControls{
         this.activeInput = {
             up: false,
             left: false,
-            right: false
+            right: false,
+            down: false
         };
     }
 
@@ -45,6 +46,8 @@ class KeyboardControls{
 
     onKeyChange(e, isDown) {
         e = e || window.event;
+
+        //console.log("KEY PRESSED");
 
         let keyName = keyCodeTable[e.keyCode];
         if (keyName) {

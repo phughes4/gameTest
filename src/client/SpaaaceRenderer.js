@@ -485,7 +485,7 @@ class SpaaaceRenderer extends Renderer {
 
     onKeyChange(e){
         if (this.playerShip) {
-            if (e.keyName === 'up') {
+            if (e.keyName === 'up' || e.keyName === 'down' || e.keyName === 'left' || e.keyName === 'right') {
                 this.playerShip.actor.thrustEmitter.emit = e.isDown;
             }
         }

@@ -6,6 +6,11 @@ const Ship = require('./Ship');
 const TwoVector = require('lance-gg').serialize.TwoVector;
 const Timer = require('./Timer');
 
+//ADDED CODE
+//const SpaaaceRenderer = require('../client/SpaaaceRenderer');
+//const Mouse = require('./Mouse');
+//END ADDED CODE
+
 class SpaaaceGameEngine extends GameEngine {
 
     start() {
@@ -60,6 +65,18 @@ class SpaaaceGameEngine extends GameEngine {
         // get the player ship tied to the player socket
         let playerShip;
 
+        //ADDED CODE
+        // let mouse;
+
+        // for (let objId in this.world.objects) {
+        //     let o = this.world.objects[objId];
+        //     if (o.playerId == playerId && o.class == Mouse) {
+        //         mouse = o;
+        //         break;
+        //     }
+        // }
+        //END ADDED CODE
+
         for (let objId in this.world.objects) {
             let o = this.world.objects[objId];
             if (o.playerId == playerId && o.class == Ship) {
@@ -71,15 +88,65 @@ class SpaaaceGameEngine extends GameEngine {
         if (playerShip) {
             if (inputData.input == 'up') {
                 playerShip.isAccelerating = true;
+
+                //ADDED CODE
+                playerShip.angle = 270;
+                //END ADDED CODE
+
                 playerShip.showThrust = 5; // show thrust for next steps.
             } else if (inputData.input == 'right') {
-                playerShip.isRotatingRight = true;
+                //playerShip.isRotatingRight = true;
+
+                //ADDED CODE
+                playerShip.isAccelerating = true;
+                playerShip.angle = 0;
+                playerShip.showThrust = 5;
+                //END ADDED CODE
             } else if (inputData.input == 'left') {
-                playerShip.isRotatingLeft = true;
+                //playerShip.isRotatingLeft = true;
+
+                //ADDED CODE
+                playerShip.isAccelerating = true;
+                playerShip.angle = 180;
+                playerShip.showThrust = 5;
+                //END ADDED CODE
+            } else if (inputData.input == 'down') {
+                //playerShip.isRotatingLeft = true;
+
+                //ADDED CODE
+                playerShip.isAccelerating = true;
+                playerShip.angle = 90;
+                playerShip.showThrust = 5;
+                //END ADDED CODE
             } else if (inputData.input == 'space') {
                 this.makeMissile(playerShip, inputData.messageIndex);
                 this.emit('fireMissile');
+            } else if(inputData.input == 'mouseMove'){ //<-- ADDED CODE
+
+                let shipScreenPosX = inputData.options.playerX;
+                let shipScreenPosY = inputData.options.playerY;
+
+                let deltaX = shipScreenPosX - inputData.options.cursorX;
+                let deltaY = shipScreenPosY - inputData.options.cursorY;
+
+                let newAngle = (Math.atan(deltaY/deltaX) * (180/Math.PI));
+                if(inputData.options.cursorX < shipScreenPosX && inputData.options.cursorY < shipScreenPosY){
+                    playerShip.angle = newAngle + 180;
+                } else if(inputData.options.cursorX < shipScreenPosX && inputData.options.cursorY > shipScreenPosY){
+                    playerShip.angle = newAngle + 180;
+                } else if(inputData.options.cursorX > shipScreenPosX && inputData.options.cursorY < shipScreenPosY){
+                    playerShip.angle = newAngle;
+                } else{
+                    playerShip.angle = newAngle;
+                }
+
+                console.log("X: " + shipScreenPosX + " Y: " + shipScreenPosY);
+                //console.log("deltaX: " + deltaX + " deltaY " + deltaY);
+                //console.log("angle: " + playerShip.angle);
+
+                playerShip.showThrust = 5;
             }
+            //END ADDED CODE
         }
     };
 
@@ -95,6 +162,14 @@ class SpaaaceGameEngine extends GameEngine {
 
         return ship;
     };
+
+    //ADDED CODE
+    // makeMouse(playerId) {
+    //     let mouse = new Mouse(playerId);
+    //     mouse.playerId = playerId;
+    //     this.addObjectToWorld(mouse);
+    // }
+    //END ADDED CODE
 
     makeMissile(playerShip, inputId) {
         let missile = new Missile(++this.world.idCount);

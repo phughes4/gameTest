@@ -2,7 +2,7 @@
 
 const ServerEngine = require('lance-gg').ServerEngine;
 const nameGenerator = require('./NameGenerator');
-const NUM_BOTS = 3;
+const NUM_BOTS = 0;
 
 class SpaaaceServerEngine extends ServerEngine {
     constructor(io, gameEngine, inputOptions) {
@@ -10,6 +10,10 @@ class SpaaaceServerEngine extends ServerEngine {
 
         this.serializer.registerClass(require('../common/Missile'));
         this.serializer.registerClass(require('../common/Ship'));
+
+        //ADDED CODE
+        //this.serializer.registerClass(require('../common/Mouse'));
+        //END ADDED CODE
 
         this.scoreData = {};
     }
@@ -38,6 +42,10 @@ class SpaaaceServerEngine extends ServerEngine {
 
         let makePlayerShip = () => {
             let ship = this.gameEngine.makeShip(socket.playerId);
+
+            //ADDED CODE
+            //let mouse = this.gameEngine.makeMouse(socket.playerId);
+            //END ADDED CODE
 
             this.scoreData[ship.id] = {
                 kills: 0,

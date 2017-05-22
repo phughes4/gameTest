@@ -6,12 +6,20 @@ const KeyboardControls = require('../client/KeyboardControls');
 const Ship = require('../common/Ship');
 const Utils = require('./../common/Utils');
 
+//ADDED CODE
+const MouseControls = require('../client/MouseControls');
+//END ADDED CODE
+
 class SpaaaceClientEngine extends ClientEngine {
     constructor(gameEngine, options) {
         super(gameEngine, options, SpaaaceRenderer);
 
         this.serializer.registerClass(require('../common/Ship'));
         this.serializer.registerClass(require('../common/Missile'));
+
+        //ADDED CODE
+        //this.serializer.registerClass(require('../common/Mouse'));
+        //END ADDED CODE
 
         this.gameEngine.on('client__preStep', this.preStep.bind(this));
     }
@@ -53,6 +61,12 @@ class SpaaaceClientEngine extends ClientEngine {
                 this.controls = new MobileControls(this.renderer);
             } else {
                 this.controls = new KeyboardControls(this.renderer);
+                //if(this.controls) console.log("controls made");
+
+                //ADDED CODE
+                this.mouseControls = new MouseControls(this.renderer);
+                //if(this.mouseControls) console.log("mouse made");
+                //END ADDED CODE
             }
 
             this.controls.on('fire', () => {
@@ -117,7 +131,21 @@ class SpaaaceClientEngine extends ClientEngine {
             if (this.controls.activeInput.right) {
                 this.sendInput('right', { movement: true });
             }
+
+            //ADDED CODE
+            if (this.controls.activeInput.down) {
+                this.sendInput('down', { movement: true });
+            }
+            //END ADDED CODE
         }
+
+        //ADDED CODE
+        if(this.mouseControls){
+            if(this.mouseControls.cursorX && this.mouseControls.cursorY){
+                this.sendInput('mouseMove', { cursorX: this.mouseControls.cursorX, cursorY: this.mouseControls.cursorY, myWidth: this.mouseControls.playerX, myHeight: this.mouseControls.playerY});
+            }
+        }
+        //END ADDED CODE
     }
 
 }
